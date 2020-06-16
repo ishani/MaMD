@@ -144,7 +144,7 @@ func main() {
 		cssDiff := targetTime.Sub(sourceTime)
 
 		// only copy if we have a newer file
-		if cssDiff < (time.Duration(1) * time.Second) {
+		if cssDiff < (time.Duration(0) * time.Second) {
 
 			fmt.Println("Copying CSS to output...")
 
