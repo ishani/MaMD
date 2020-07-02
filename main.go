@@ -17,6 +17,8 @@ import (
 
 	"github.com/yuin/goldmark"
 	"github.com/yuin/goldmark/extension"
+	"github.com/yuin/goldmark/parser"
+	"github.com/yuin/goldmark/renderer/html"
 )
 
 var inputPath string
@@ -93,6 +95,13 @@ func findMarkdown(searchPath string, info os.FileInfo, err error) error {
 	md := goldmark.New(
 		goldmark.WithExtensions(extension.GFM),
 		goldmark.WithExtensions(ChromaExtension),
+		goldmark.WithParserOptions(
+			parser.WithAutoHeadingID(),
+		),
+		goldmark.WithRendererOptions(
+			html.WithHardWraps(),
+			html.WithXHTML(),
+		),
 	)
 
 	var htmlOut bytes.Buffer
@@ -123,11 +132,14 @@ func main() {
 	initArguments()
 
 	cssCopyTarget := path.Join(outputPath, cssFilename)
+	shouldCopyCSS := true
 
 	// check to see if we should overwrite the (existing) css file in the target
 	// only copy if source CSS is newer; and also this prevents against damaging the source CSS
 	// if you run MaMD and ask to output in the current directory
 	if fileExists(cssCopyTarget) {
+
+		shouldCopyCSS = false
 
 		sourceInfo, err := os.Stat(cssFilename)
 		if err != nil {
@@ -145,14 +157,18 @@ func main() {
 
 		// only copy if we have a newer file
 		if cssDiff < (time.Duration(0) * time.Second) {
+			shouldCopyCSS = true
+		}
+	}
 
-			fmt.Println("Copying CSS to output...")
+	if shouldCopyCSS {
 
-			err := fileCopy(cssFilename, cssCopyTarget)
-			if err != nil {
-				fmt.Printf("Could not copy default CSS file (%s), %v\n", cssFilename, err)
-				os.Exit(1)
-			}
+		fmt.Println("Copying CSS to output...")
+
+		err := fileCopy(cssFilename, cssCopyTarget)
+		if err != nil {
+			fmt.Printf("Could not copy default CSS file (%s), %v\n", cssFilename, err)
+			os.Exit(1)
 		}
 	}
 
