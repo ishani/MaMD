@@ -99,7 +99,7 @@ func findMarkdown(searchPath string, info os.FileInfo, err error) error {
 			parser.WithAutoHeadingID(),
 		),
 		goldmark.WithRendererOptions(
-			html.WithHardWraps(),
+			html.WithUnsafe(),
 			html.WithXHTML(),
 		),
 	)
