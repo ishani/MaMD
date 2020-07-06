@@ -197,10 +197,24 @@ h6 {
 h1,
 h2,
 h3 {
-  border-bottom: 2px solid #e8e8e8;
   margin-bottom: 1.15rem;
-  padding-bottom: .5rem;
+  padding-top: .25rem;
+  padding-bottom: .25rem;
+}
+
+h1,
+h2 {
   text-align: center;
+  font-weight: 400;
+}
+h2 {
+  margin-top: 2rem;
+  background-color: #e5e5e5;
+  border-bottom: 2px solid #e0e0e0;
+}
+h3 {
+  text-align: left;
+  border-bottom: 2px solid #e8e8e8;
 }
 
 blockquote {

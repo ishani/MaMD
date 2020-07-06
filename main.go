@@ -25,6 +25,8 @@ var inputPath string
 var outputPath string
 var htmlTemplate *tpl.Template
 
+const cssFilename = "mamd.css"
+
 func initArguments() {
 	const (
 		inputPathDefault  = ""
@@ -110,6 +112,7 @@ func findMarkdown(searchPath string, info os.FileInfo, err error) error {
 	}
 
 	newFilename := filenameWithoutExtension(filepath.Base(searchPath))
+	fileTitle := newFilename
 	newFilename += ".html"
 
 	outputFile, err := os.Create(path.Join(outputPath, newFilename))
@@ -117,15 +120,19 @@ func findMarkdown(searchPath string, info os.FileInfo, err error) error {
 		return err
 	}
 
-	err = htmlTemplate.Execute(outputFile, struct{ Content template.HTML }{Content: template.HTML(string(htmlOut.Bytes()))})
+	err = htmlTemplate.Execute(outputFile, struct {
+		Content template.HTML
+		Title   string
+	}{
+		Content: template.HTML(string(htmlOut.Bytes())),
+		Title:   fileTitle,
+	})
 	if err != nil {
 		return err
 	}
 
 	return nil
 }
-
-const cssFilename = "mamd.css"
 
 func main() {
 

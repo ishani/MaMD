@@ -1,28 +1,19 @@
 # Markdown: Syntax
 
-*   [Overview](#overview)
-    *   [Philosophy](#philosophy)
-    *   [Inline HTML](#inline-html)
-    *   [Automatic Escaping for Special Characters](#automatic-escaping-for-special-characters)
-*   [Block Elements](#block-elements)
-    *   [Paragraphs and Line Breaks](#paragraphs-and-line-breaks)
-    *   [Headers](#headers)
-    *   [Blockquotes](#blockquotes)
-    *   [Lists](#lists)
-    *   [Code Blocks](#code-blocks)
-    *   [Horizontal Rules](#horizontal-rules)
-*   [Span Elements](#span-elements)
-    *   [Links](#links)
-    *   [Emphasis](#emphasis)
-    *   [Code](#code)
-    *   [Images](#images)
-*   [Miscellaneous](#miscellaneous)
-    *   [Backslash Escapes](#backslash-escapes)
-    *   [Automatic Links](#automatic-links)
-
-
-**Note:** This document is itself written using Markdown; you
-can [see the source for it by adding '.text' to the URL](/projects/markdown/syntax.text).
+- [Markdown: Syntax](#markdown-syntax)
+  - [Overview](#overview)
+    - [Philosophy](#philosophy)
+  - [Block Elements](#block-elements)
+    - [Paragraphs and Line Breaks](#paragraphs-and-line-breaks)
+    - [Headers](#headers)
+    - [Blockquotes](#blockquotes)
+    - [Lists](#lists)
+    - [Tables](#tables)
+    - [Code Blocks](#code-blocks)
+  - [Span Elements](#span-elements)
+    - [Links](#links)
+    - [Emphasis](#emphasis)
+    - [Code](#code)
 
 ----
 
@@ -225,6 +216,13 @@ to be indented *twice* -- 8 spaces or two tabs:
 *   A list item with a code block:
 
         <code goes here>
+
+### Tables
+
+First Header | Second Header
+------------ | -------------
+Content from cell 1 | Content from cell 2
+Content in the first column | Content in the second column
 
 ### Code Blocks
 
