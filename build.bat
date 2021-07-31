@@ -1,12 +1,15 @@
 @echo off
-
+go get github.com/mitchellh/gox
+ 
 echo building all versions ...
 gox -osarch="windows/amd64 darwin/amd64 linux/amd64" -output="_builds/{{.Dir}}_{{.OS}}_{{.Arch}}"
 
 echo cleaning examples ...
 rmdir /s /q _builds\example_in
 mkdir _builds\example_in
+mkdir _builds\example_in\sub
 xcopy .\example_in _builds\example_in
+xcopy .\example_in\sub _builds\example_in\sub
 
 rmdir /s /q _builds\example_out
 

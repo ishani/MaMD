@@ -42,6 +42,9 @@ func initArguments() {
 		flag.PrintDefaults()
 		os.Exit(1)
 	}
+
+	inputPath = filepath.FromSlash(inputPath)
+	outputPath = filepath.FromSlash(outputPath)
 }
 
 func fileCopy(src, dst string) error {
@@ -84,7 +87,40 @@ func findMarkdown(searchPath string, info os.FileInfo, err error) error {
 		return nil
 	}
 
-	fmt.Println(searchPath, info.Size())
+	// get the relative search path (relative to inputPath)
+	relPath, err := filepath.Rel(inputPath, searchPath)
+	if err != nil {
+		return err
+	}
+
+	// remove filename from relative path
+	relPath = strings.TrimSuffix(relPath, filepath.Base(searchPath))
+
+	// count number of subdirectories so we know how many to offset the .css reference
+	numSubdirs := 0
+	for _, subdir := range strings.Split(relPath, string(filepath.Separator)) {
+		if subdir != "" {
+			numSubdirs++
+		}
+	}
+	// create string with .. for every subdirectory
+	cssOffset := strings.Repeat("../", numSubdirs)
+
+	// add any subdirectories to the output path
+	relPath = filepath.FromSlash(path.Join(strings.TrimRight(outputPath, "\\"), relPath))
+
+	fmt.Printf("%40v | ", searchPath)
+	fmt.Printf("%7v | ", info.Size())
+	fmt.Printf("%7v | ", numSubdirs)
+	fmt.Println(relPath)
+
+	// create the output directory if it doesn't exist
+	if !fileExists(relPath) {
+		err = os.MkdirAll(relPath, 0755)
+		if err != nil {
+			return err
+		}
+	}
 
 	file, err := os.Open(searchPath)
 	if err != nil {
@@ -93,6 +129,9 @@ func findMarkdown(searchPath string, info os.FileInfo, err error) error {
 	defer file.Close()
 
 	fileContents, err := ioutil.ReadAll(file)
+	if err != nil {
+		return err
+	}
 
 	md := goldmark.New(
 		goldmark.WithExtensions(extension.GFM),
@@ -115,17 +154,19 @@ func findMarkdown(searchPath string, info os.FileInfo, err error) error {
 	fileTitle := newFilename
 	newFilename += ".html"
 
-	outputFile, err := os.Create(path.Join(outputPath, newFilename))
+	outputFile, err := os.Create(path.Join(relPath, newFilename))
 	if err != nil {
 		return err
 	}
 
 	err = htmlTemplate.Execute(outputFile, struct {
-		Content template.HTML
-		Title   string
+		Content           template.HTML
+		Title             string
+		RelativeCssOffset string
 	}{
-		Content: template.HTML(string(htmlOut.Bytes())),
-		Title:   fileTitle,
+		Content:           template.HTML(htmlOut.String()),
+		Title:             fileTitle,
+		RelativeCssOffset: cssOffset,
 	})
 	if err != nil {
 		return err

@@ -17,6 +17,8 @@
 
 ----
 
+[Test Subdir](sub/tier1.html)
+
 ## Overview
 
 ### Philosophy
